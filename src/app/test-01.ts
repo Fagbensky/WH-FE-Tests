@@ -19,7 +19,7 @@ import { RouterModule } from "@angular/router";
 })
 export class Test01Component {
 
-    loan_amount:number = 100000;
+    loan_amount:number = 0;
     monthly_payment:number | string = Boolean(this.loan_amount)? (this.loan_amount/100)* 2: "N/A";
     late_payment: number | string = Boolean(this.loan_amount) ? (+this.monthly_payment/100)* 5: "N/A";
 

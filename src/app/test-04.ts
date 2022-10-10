@@ -3,10 +3,11 @@
  * First name and last name should be lowercased, and then a random integer between 1 and 9 should be added to the end
  * For example: if the inputs are "John" and "DOE" the generated username could be "john_doe_4" or "john_doe_2"
  */
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from "@angular/router";
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { debounceTime, Subscription } from 'rxjs';
 
 @Component({
     selector: 'ng-app',
@@ -19,22 +20,25 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
                         type="text"
                         placeholder="First Name (required)"
                         formControlName="firstName"
+                        (blur)="getDisplayName()"
                      />
                     <input
                         id="lastName"
                         type="text"
                         placeholder="Last Name (required)"
                         formControlName="lastName"
+                        (blur)="getDisplayName()"
                      />
                     </form>
 
-                    <h3 *ngIf="nameForm.valid && nameForm.get('firstName').touched && nameForm.get('lastName').touched">{{getDisplayName()}}</h3>
+                    <h3 *ngIf="finalString">{{finalString}}</h3>
                 </div>
                 `,
     styles: []
 })
 export class UserNameComponent implements OnInit {
     nameForm: FormGroup;
+    finalString = "";
 
     constructor(
         private fb: FormBuilder
@@ -47,12 +51,15 @@ export class UserNameComponent implements OnInit {
         })
     }
 
-    generateRandomNumber(){
-        return Math.floor(Math.random() * 10);
-    }
-
     getDisplayName(){
-        return this.nameForm.get('firstName').value.toLowerCase()+"_"+this.nameForm.get('lastName').value.toLowerCase()+"_"+Math.floor(Math.random() * 10);
+        if(this.nameForm.valid && (this.nameForm.get('firstName').touched && this.nameForm.get('lastName').touched)){
+            let randomInt = Math.floor(Math.random() * 10);
+            setTimeout(() => {
+                this.finalString = this.nameForm.get('firstName').value.toLowerCase()+"_"+this.nameForm.get('lastName').value.toLowerCase()+"_"+randomInt;
+            });
+        }else{
+            this.finalString = "";
+        }
     }
 
 }

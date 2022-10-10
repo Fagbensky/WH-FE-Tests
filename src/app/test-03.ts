@@ -19,12 +19,12 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
     selector : 'ng-app',
-    template : `<form (submit)="logged_in = true">
+    template : `<form>
                     <h2>Login</h2>
                     <br/>
-                    <input type="email" value="" name="email" [(ngModel)]="email" />
+                    <input type="email" value="" name="email" [(ngModel)]="email" (ngModelChange)="tryLogin()" />
                     <br/>
-                    <input type="password" value="" name="password" [(ngModel)]="password" />
+                    <input type="password" value="" name="password" [(ngModel)]="password" (ngModelChange)="tryLogin()" />
                     <button type="submit" [disabled]="!(emailRegEx.test(email) && passwordRegEx.test(password))">Submit</button>
                     <br/><br/>
                     <div *ngIf="logged_in">Logged In!</div>
@@ -38,6 +38,14 @@ export class Test03Component {
     emailRegEx:RegExp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     passwordRegEx: RegExp = /(?=[A-Za-z0-9@#$%^&+!=]+$)^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+!=])(?=.{8,}).*$/;
     logged_in = false;
+
+    tryLogin(){
+        if(this.emailRegEx.test(this.email) && this.passwordRegEx.test(this.password)){
+            this.logged_in = true;
+        }else{
+            this.logged_in = false;
+        }
+    }
 }
 
 @NgModule({
